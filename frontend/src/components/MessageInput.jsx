@@ -10,7 +10,6 @@ const MessageInput = () => {
 	const inputRef = useRef(null)
 	const { sendMessage, selectedUser, isSendingMessage } = useChatStore()
 
-	
 	useEffect(() => {
 		if (inputRef.current) {
 			setTimeout(() => {
@@ -35,7 +34,7 @@ const MessageInput = () => {
 
 		const reader = new FileReader()
 		reader.onloadend = () => {
-			setImagePreview(reader.result )
+			setImagePreview(reader.result)
 		}
 		reader.readAsDataURL(file)
 	}
@@ -45,9 +44,9 @@ const MessageInput = () => {
 		if (fileInputRef.current) fileInputRef.current.value = ''
 	}
 
-		const handleSendMessage = async (e) => {
+	const handleSendMessage = async e => {
 		e.preventDefault()
-		if ((!text.trim() && !imagePreview)	 || isSendingMessage) return
+		if ((!text.trim() && !imagePreview) || isSendingMessage) return
 
 		try {
 			await sendMessage({
@@ -58,7 +57,7 @@ const MessageInput = () => {
 			setText('')
 			setImagePreview(null)
 			if (fileInputRef.current) fileInputRef.current.value = ''
-			
+
 			setTimeout(() => {
 				inputRef.current?.focus()
 			}, 100)

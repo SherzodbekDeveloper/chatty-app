@@ -20,7 +20,8 @@ const Sidebar = ({ onClose }) => {
 
 	useEffect(() => {
 		getUsers()
-	}, [getUsers])
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	const filteredUsers = (
 		showOnlineOnly
@@ -30,10 +31,14 @@ const Sidebar = ({ onClose }) => {
 		user.fullName?.toLowerCase().includes(searchQuery.toLowerCase())
 	)
 
-	const handleUserSelect = (user) => {
+	const handleUserSelect = user => {
 		setSelectedUser(user)
 		if (onClose) {
-			onClose()
+			// Use setTimeout to defer onClose to next event loop cycle
+			// This prevents React error #284: "Cannot update a component while rendering a different component"
+			setTimeout(() => {
+				onClose()
+			}, 0)
 		}
 	}
 

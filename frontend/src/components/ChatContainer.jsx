@@ -17,8 +17,8 @@ const ChatContainer = ({ onOpenSidebar }) => {
 		unsubscribeFromMessages,
 	} = useChatStore()
 	const { authUser } = useAuthStore()
-	const messageEndRef = useRef < HTMLDivElement > null
-	const messagesContainerRef = useRef < HTMLDivElement > null
+	const messageEndRef = useRef(null)
+	const messagesContainerRef = useRef(null)
 
 	useEffect(() => {
 		if (!selectedUser?._id) return
@@ -73,7 +73,7 @@ const ChatContainer = ({ onOpenSidebar }) => {
 					messages.map(message => {
 						const isSentByMe =
 							(message.senderId?.toString() || message.senderId) ===
-							(authUser._id?.toString() || authUser._id)
+							(authUser?._id?.toString() || authUser?._id)
 						return (
 							<div
 								key={message._id}
@@ -89,8 +89,8 @@ const ChatContainer = ({ onOpenSidebar }) => {
 									<img
 										src={
 											isSentByMe
-												? authUser.profilePic || '/avatar.png'
-												: selectedUser.profilePic || '/avatar.png'
+												? authUser?.profilePic || '/avatar.png'
+												: selectedUser?.profilePic || '/avatar.png'
 										}
 										alt='avatar'
 										className='size-8 rounded-full object-cover'
