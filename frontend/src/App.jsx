@@ -1,24 +1,26 @@
-import { Loader } from 'lucide-react'
-import { useEffect } from 'react'
-import { Navigate, Route, Routes } from 'react-router-dom'
 import Navbar from './components/Navbar'
+
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import ProfilePage from './pages/ProfilePage'
 import SettingsPage from './pages/SettingsPage'
 import SignUpPage from './pages/SignUpPage'
-import { useAuthStore } from './store/useAuthStore'
-import { Toaster } from 'react-hot-toast'
-import { useThemeStore } from './store/useThemeStore'
-function App() {
-	const { authUser, checkAuth, isCheckingAuth } = useAuthStore()
 
-	const {theme} = useThemeStore()
+import { useEffect } from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
+import { useAuthStore } from './store/useAuthStore'
+import { useThemeStore } from './store/useThemeStore'
+
+import { Loader } from 'lucide-react'
+import { Toaster } from 'react-hot-toast'
+
+const App = () => {
+	const { authUser, checkAuth, isCheckingAuth } = useAuthStore()
+	const { theme } = useThemeStore()
+
 	useEffect(() => {
 		checkAuth()
-	}, [authUser])
-
-	console.log({ authUser })
+	}, [checkAuth])
 
 	if (isCheckingAuth && !authUser)
 		return (
@@ -26,6 +28,7 @@ function App() {
 				<Loader className='size-10 animate-spin' />
 			</div>
 		)
+
 	return (
 		<div data-theme={theme}>
 			<Navbar />
@@ -33,23 +36,24 @@ function App() {
 			<Routes>
 				<Route
 					path='/'
-					element={authUser ? <HomePage /> : <Navigate to={'/login'} />}
+					element={authUser ? <HomePage /> : <Navigate to='/login' />}
 				/>
 				<Route
 					path='/signup'
-					element={!authUser ? <SignUpPage /> : <Navigate to={'/'} />}
+					element={!authUser ? <SignUpPage /> : <Navigate to='/' />}
 				/>
 				<Route
 					path='/login'
-					element={!authUser ? <LoginPage /> : <Navigate to={'/'} />}
+					element={!authUser ? <LoginPage /> : <Navigate to='/' />}
 				/>
 				<Route path='/settings' element={<SettingsPage />} />
 				<Route
 					path='/profile'
-					element={authUser ? <ProfilePage /> : <Navigate to={'/profile'} />}
+					element={authUser ? <ProfilePage /> : <Navigate to='/login' />}
 				/>
 			</Routes>
-			<Toaster position='top-center'/>
+
+			<Toaster />
 		</div>
 	)
 }
