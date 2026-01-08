@@ -4,17 +4,14 @@ import { create } from 'zustand'
 import { axiosInstance } from '../lib/axios.js'
 
 const getSocketURL = () => {
-	// Check if VITE_API_URL is set (for production with separate API domain)
 	if (import.meta.env.VITE_API_URL) {
 		const apiUrl = import.meta.env.VITE_API_URL.replace('/api', '')
 		return apiUrl
 	}
-	// Development mode
 	if (import.meta.env.MODE === 'development') {
 		return 'http://localhost:5001'
 	}
-	// Production mode - use same domain
-	return ''
+	return '/'
 }
 
 export const useAuthStore = create((set, get) => ({

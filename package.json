@@ -1,6 +1,23 @@
 {
-  "dependencies": {
-    "cookie-parser": "^1.4.7"
-  }
+	"name": "chatty-app",
+	"version": "1.0.0",
+	"description": "A modern, real-time chat application built with React, Node.js, Express, Socket.IO, and MongoDB. Features include instant messaging, user authentication, profile management, and image sharing.",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend",
+		"start": "npm run start --prefix backend"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/SherzodbekDeveloper/chatty-app.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"type": "commonjs",
+	"bugs": {
+		"url": "https://github.com/SherzodbekDeveloper/chatty-app/issues"
+	},
+	"homepage": "https://github.com/SherzodbekDeveloper/chatty-app#readme"
 }
-

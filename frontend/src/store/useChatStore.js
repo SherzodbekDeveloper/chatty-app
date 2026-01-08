@@ -7,6 +7,7 @@ export const useChatStore = create((set, get) => ({
 	messages: [],
 	users: [],
 	selectedUser: null,
+	unreadCounts: {}, // { [userId]: number }
 	isUsersLoading: false,
 	isMessagesLoading: false,
 	isSendingMessage: false, // add loading state for sending
@@ -90,9 +91,6 @@ export const useChatStore = create((set, get) => ({
 	},
 
 	subscribeToMessages: () => {
-		const { selectedUser } = get()
-		if (!selectedUser) return
-
 		const socket = useAuthStore.getState().socket
 		if (!socket) {
 			console.error('[useChatStore] Socket not available')
@@ -105,25 +103,23 @@ export const useChatStore = create((set, get) => ({
 		socket.off('newMessage')
 
 		socket.on('newMessage', newMessage => {
-			const { selectedUser: currentSelectedUser } = get()
-			if (!currentSelectedUser) return
-
-			// Check if message is part of the current conversation
-			// Message should be from selected user to current user, or from current user to selected user
 			const senderId = newMessage.senderId?.toString() || newMessage.senderId
 			const receiverId =
 				newMessage.receiverId?.toString() || newMessage.receiverId
-			const selectedUserId =
-				currentSelectedUser._id?.toString() || currentSelectedUser._id
 			const currentUserId = authUser._id?.toString() || authUser._id
 
-			const isFromSelectedUser =
-				senderId === selectedUserId && receiverId === currentUserId
-			const isToSelectedUser =
-				senderId === currentUserId && receiverId === selectedUserId
+			// Ignore messages that are not related to current user
+			if (senderId !== currentUserId && receiverId !== currentUserId) return
 
-			if (isFromSelectedUser || isToSelectedUser) {
-				// Check if message already exists to avoid duplicates
+			// Determine the other user in this conversation
+			const otherUserId = senderId === currentUserId ? receiverId : senderId
+
+			const { selectedUser: currentSelectedUser } = get()
+			const selectedUserId =
+				currentSelectedUser?._id?.toString() || currentSelectedUser?._id
+
+			// If this message belongs to the currently open chat, append to messages
+			if (selectedUserId && otherUserId === selectedUserId) {
 				const existingMessages = get().messages
 				const messageExists = existingMessages.some(
 					msg => msg._id?.toString() === newMessage._id?.toString()
@@ -133,6 +129,31 @@ export const useChatStore = create((set, get) => ({
 					set({
 						messages: [...existingMessages, newMessage],
 					})
+				}
+				return
+			}
+
+			// Otherwise, increase unread count badge for that user (up to 4+)
+			set(state => {
+				const current = state.unreadCounts[otherUserId] || 0
+				const next = current >= 4 ? 4 : current + 1
+				return {
+					unreadCounts: {
+						...state.unreadCounts,
+						[otherUserId]: next,
+					},
+				}
+			})
+
+			// Optional: show browser notification for incoming messages from other users
+			if (typeof window !== 'undefined' && 'Notification' in window) {
+				if (Notification.permission === 'granted') {
+					// We don't have full user details here; badge is the priority
+					new Notification('New message', {
+						body: newMessage.text || 'New message received',
+					})
+				} else if (Notification.permission === 'default') {
+					Notification.requestPermission()
 				}
 			}
 		})
@@ -145,5 +166,15 @@ export const useChatStore = create((set, get) => ({
 		}
 	},
 
-	setSelectedUser: selectedUser => set({ selectedUser }),
+	setSelectedUser: selectedUser =>
+		set(state => {
+			const newCounts = { ...state.unreadCounts }
+			if (selectedUser?._id) {
+				newCounts[selectedUser._id] = 0 // clear unread when opening chat
+			}
+			return {
+				selectedUser,
+				unreadCounts: newCounts,
+			}
+		}),
 }))

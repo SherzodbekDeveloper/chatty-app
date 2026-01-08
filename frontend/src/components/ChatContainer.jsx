@@ -63,7 +63,6 @@ const ChatContainer = () => {
 						<div
 							key={message._id}
 							className={`chat ${isSentByMe ? 'chat-end' : 'chat-start'}`}
-							ref={messageEndRef}
 						>
 							<div className=' chat-image avatar'>
 								<div className='size-10 rounded-full border'>
@@ -95,6 +94,8 @@ const ChatContainer = () => {
 						</div>
 					)
 				})}
+				{/* Scroll anchor to keep view at the latest message */}
+				<div ref={messageEndRef} />
 			</div>
 
 			<MessageInput />
