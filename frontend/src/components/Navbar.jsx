@@ -7,9 +7,8 @@ const Navbar = () => {
 
 	return (
 		<header className='fixed top-0 left-0 right-0 z-50 bg-base-100/95 backdrop-blur-md border-b border-base-300 shadow-sm'>
-			<div className='container mx-auto px-3 sm:px-4 h-14 sm:h-16'>
-				<div className='flex items-center justify-between h-full'>
-					{/* Logo */}
+			<div className='h-14 sm:h-16'>
+				<div className='flex items-center justify-between h-full px-4'>
 					<Link
 						to='/'
 						className='flex items-center gap-2 sm:gap-2.5 hover:opacity-80 transition-opacity'
@@ -20,11 +19,10 @@ const Navbar = () => {
 						<h1 className='text-base sm:text-lg font-bold'>Chatty</h1>
 					</Link>
 
-					{/* Actions */}
-					<div className='flex items-center gap-1 sm:gap-2'>
+					<div className='flex items-center gap-3 sm:gap-4'>
 						<Link
 							to='/settings'
-							className='btn btn-ghost btn-sm btn-circle sm:btn-sm sm:gap-2'
+							className='btn btn-ghost btn-sm sm:btn-sm gap-2'
 							title='Settings'
 						>
 							<Settings className='w-4 h-4 sm:w-5 sm:h-5' />
@@ -35,7 +33,7 @@ const Navbar = () => {
 							<>
 								<Link
 									to='/profile'
-									className='btn btn-ghost btn-sm btn-circle sm:btn-sm sm:gap-2'
+									className='btn btn-ghost btn-sm sm:btn-sm gap-2'
 									title='Profile'
 								>
 									<User className='w-4 h-4 sm:w-5 sm:h-5' />
@@ -44,8 +42,7 @@ const Navbar = () => {
 
 								<button
 									onClick={logout}
-									className='btn btn-ghost btn-sm btn-circle sm:btn-sm sm:gap-2'
-									title='Logout'
+									className='btn btn-ghost btn-sm sm:btn-sm gap-2'
 								>
 									<LogOut className='w-4 h-4 sm:w-5 sm:h-5' />
 									<span className='hidden md:inline'>Logout</span>
